@@ -4,22 +4,24 @@
 #include <vector>
 #include <string>
 #include <regex>
+#include <cmath>
 
 using namespace std;
 
 struct range {
-    int min;
-    int max;
+    long int min;
+    long int max;
 };
 
 int main()
 {
     // puzzle variables
     vector<range> v;
-    int res;
+    vector<long int>ids;
+    long int res;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -42,8 +44,8 @@ int main()
 
             int pos = match_str.find("-");
             range r = { 
-                stoi(match_str.substr(0,pos)), 
-                stoi(match_str.substr(pos+1)) 
+                stol(match_str.substr(0,pos)), 
+                stol(match_str.substr(pos+1)) 
             };
             v.push_back(r);
         }
@@ -51,9 +53,23 @@ int main()
     f.close();
 
     for (auto it : v){
-        cout << it.min << ", " << it.max << endl;
+        for (long int n = it.min; n <= it.max; n++){
+
+            int order = floor(log10(n));
+            if ((order % 2)==1){
+
+                int p = pow(10,(order+1)/2);
+                long int n_begin = round(n/p);
+                long int n_end = n - p*n_begin;
+
+                if (n_end==n_begin) ids.push_back(n);
+            }
+        }
     }
-
-
+    res = 0;
+    for (auto id : ids) {
+        res+=id;
+        cout << "res: " << res << endl;
+    }
     return 0;
 }

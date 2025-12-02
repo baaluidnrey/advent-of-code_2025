@@ -5,7 +5,7 @@ CXX = g++
 CXXFLAGS = -Wall -g
 
 # Target executable
-TARGET = main
+TARGET = ./main
 
 # For deleting the target
 TARGET_DEL = main

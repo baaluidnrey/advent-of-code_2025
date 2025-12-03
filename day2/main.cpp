@@ -21,7 +21,7 @@ int main()
     long int res;
 
     // open puzzle input
-    ifstream f("input.txt");
+    ifstream f("input_test.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -55,6 +55,7 @@ int main()
     for (auto it : v){
         for (long int n = it.min; n <= it.max; n++){
 
+            /* part 1 ----------
             int order = floor(log10(n));
             if ((order % 2)==1){
 
@@ -64,8 +65,35 @@ int main()
 
                 if (n_end==n_begin) ids.push_back(n);
             }
+            */
+
+            int nb_digits = floor(log10(n))+1;
+            cout << "n: " << n << ", nb_digits: " << nb_digits << endl;
+            int q = 2;
+            bool id_valid = true;
+            while (id_valid && q<=nb_digits){
+                if ( (nb_digits % q) == 0 ){
+                    long int values[q];
+                    long int current = n;
+
+                    for (int i=0; i<q; i++){
+                        int p = pow(10, nb_digits/q);   // TODO : begin with the higher order
+                        long int tmp = round(current/p);
+                        // current -= p*tmp;
+                        current = p*(current-p*tmp);
+                        values[i] = tmp;
+                        cout << "p: " << p << endl;
+                        cout << "tmp: " << tmp << endl;
+                        cout << "current: " << current << endl;
+                    }
+                    for (int i=0; i<q; i++) cout << values[i] << ", ";
+                    cout << endl;       
+                }
+                q++;
+            }
         }
     }
+
     res = 0;
     for (auto id : ids) {
         res+=id;

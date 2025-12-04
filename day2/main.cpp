@@ -21,7 +21,7 @@ int main()
     long int res;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -55,32 +55,19 @@ int main()
     for (auto it : v){
         for (long int n = it.min; n <= it.max; n++){
 
-            /* part 1 ----------
-            int order = floor(log10(n));
-            if ((order % 2)==1){
-
-                int p = pow(10,(order+1)/2);
-                long int n_begin = round(n/p);
-                long int n_end = n - p*n_begin;
-
-                if (n_end==n_begin) ids.push_back(n);
-            }
-            */
-
             bool id_valid = true;
-
             int nb_digits = floor(log10(n))+1;
-            cout << "---\nn: " << n << ", nb_digits: " << nb_digits << endl;
 
             // int q = 2;           // part 1
             int q = nb_digits;      // part 2
             int q_min = 2;
 
             while (id_valid && q>=q_min){
-                if ( (nb_digits % q) == 0 ){
+                if ( (nb_digits % q) == 0 ){    // n can be splitted in q parts
                     long int values[q];
                     long int current = n;
 
+                    // extract q parts from highest order
                     for (int i=0; i<q-1; i++){
                         int p = pow(10, nb_digits-(i+1)*(nb_digits/q));
                         long int tmp = round(current/p);
@@ -88,10 +75,12 @@ int main()
                         values[i] = tmp;
                     }
                     values[q-1] = current;
-                    cout << "q=" << q << "\t| ";
-                    for (int i=0; i<q; i++) cout << values[i] << ", ";
-                    cout << endl; 
-                    for (int i=0; i<nb_digits; i++) id_valid*=(values[i]!=values[0]);    
+
+                    // check if id is valid
+                    id_valid = false;
+                    for (int i=0; i<q; i++){
+                        if (values[i]!=values[0]) id_valid = true;
+                    }
                 }
                 q--;
             }
@@ -99,10 +88,15 @@ int main()
         }
     }
 
+    // compute and display the result
     res = 0;
+    cout << "invalid ids: ";
     for (auto id : ids) {
+        cout << id << ", ";
         res+=id;
     }
+    cout << endl;
     cout << "res: " << res << endl;
+
     return 0;
 }

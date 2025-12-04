@@ -67,37 +67,42 @@ int main()
             }
             */
 
-            int nb_digits = floor(log10(n))+1;
-            cout << "n: " << n << ", nb_digits: " << nb_digits << endl;
-            int q = 2;
             bool id_valid = true;
-            while (id_valid && q<=nb_digits){
+
+            int nb_digits = floor(log10(n))+1;
+            cout << "---\nn: " << n << ", nb_digits: " << nb_digits << endl;
+
+            // int q = 2;           // part 1
+            int q = nb_digits;      // part 2
+            int q_min = 2;
+
+            while (id_valid && q>=q_min){
                 if ( (nb_digits % q) == 0 ){
                     long int values[q];
                     long int current = n;
 
-                    for (int i=0; i<q; i++){
-                        int p = pow(10, nb_digits/q);   // TODO : begin with the higher order
+                    for (int i=0; i<q-1; i++){
+                        int p = pow(10, nb_digits-(i+1)*(nb_digits/q));
                         long int tmp = round(current/p);
-                        // current -= p*tmp;
-                        current = p*(current-p*tmp);
+                        current -= p*tmp;
                         values[i] = tmp;
-                        cout << "p: " << p << endl;
-                        cout << "tmp: " << tmp << endl;
-                        cout << "current: " << current << endl;
                     }
+                    values[q-1] = current;
+                    cout << "q=" << q << "\t| ";
                     for (int i=0; i<q; i++) cout << values[i] << ", ";
-                    cout << endl;       
+                    cout << endl; 
+                    for (int i=0; i<nb_digits; i++) id_valid*=(values[i]!=values[0]);    
                 }
-                q++;
+                q--;
             }
+            if (!id_valid) ids.push_back(n);
         }
     }
 
     res = 0;
     for (auto id : ids) {
         res+=id;
-        cout << "res: " << res << endl;
     }
+    cout << "res: " << res << endl;
     return 0;
 }

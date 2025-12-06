@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-    int res = 0;
+    long int res = 0;
     string str;
 
     // open puzzle input
@@ -22,8 +22,9 @@ int main()
     while (getline(f, str)){
         
         std::vector<int>::iterator result;
-        int joltage = 0;
-        int nb_batteries = 2;       // part 1
+        long int joltage = 0;
+        // int nb_batteries = 2;       // part 1
+        int nb_batteries = 12;       // part 2
 
         // extract digits
         vector<int> v;
@@ -33,24 +34,25 @@ int main()
 
         for (int i=1; i<=nb_batteries; i++){
 
-            for (auto it : v) cout << it << ", ";
-            cout << endl;
+            // for (auto it : v) cout << it << ", ";
+            // cout << endl;
             
             result = std::max_element(
                 v.begin(), 
                 v.end()-(nb_batteries-i)
             );
             
-            std::cout << "Max element found at index "
-                    << std::distance(v.begin(), result)
-                    << " has value " << *result << '\n';
+            // std::cout << "Max element found at index "
+            //         << std::distance(v.begin(), result)
+            //         << " has value " << *result << '\n';
 
             joltage += *result * pow(10, nb_batteries-i);
 
-            cout << "joltage: " << joltage << endl; 
+            // cout << "joltage: " << joltage << endl; 
 
             v.erase(v.begin(), v.begin() + std::distance(v.begin(), result) + 1);
         }
+        cout << "joltage: " << joltage << endl; 
         res += joltage;
     }
     f.close();

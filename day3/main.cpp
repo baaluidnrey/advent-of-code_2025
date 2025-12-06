@@ -33,14 +33,17 @@ int main()
         // compute joltage of bank
         for (int i=1; i<=nb_batteries; i++){
             
-            result = std::max_element(
+            result = max_element(
                 v.begin(), 
                 v.end()-(nb_batteries-i)
             );
             
             joltage += *result * pow(10, nb_batteries-i);
 
-            v.erase(v.begin(), v.begin() + std::distance(v.begin(), result) + 1);
+            v.erase(
+                v.begin(), 
+                v.begin() + distance(v.begin(), result) + 1
+            );
         }
         res += joltage;
     }

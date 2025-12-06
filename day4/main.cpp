@@ -10,7 +10,9 @@ using namespace std;
 class Map2D {
 
     public:
-        Map2D(vector<int> v, int height) : v(v), height(height)
+        Map2D(vector<int> v, int height) : 
+        v(v),
+        height(height)
         {
             width = v.size() / height;
         }
@@ -35,6 +37,14 @@ class Map2D {
                 }
             }
             return sum - v[pos];
+        }
+
+        int GetValue(int pos){
+            return v[pos];
+        }
+
+        void UpdateValue(int pos, int value){
+            v[pos] = value;
         }
 
     private:
@@ -69,19 +79,36 @@ int main()
     Map2D map2D = Map2D(v, nb_lines);
     // map2D.PrintMap();
 
-    /* compute neighbours
-    vector<int> v_neighbours;
-    for (int pos=0; pos<=v.size(); pos++) v_neighbours.push_back(map2D.SumNeighbours(pos));
-    Map2D neighbours_map = Map2D(v_neighbours, nb_lines);
-    cout << "neighbours:\n";
-    neighbours_map.PrintMap();
-    */
+    // compute neighbours
+    vector<int> v_rolls_to_remove;
+    int nb_rolls_to_remove = 0;
 
-    // compute res
+    // part 1 ----------
+    // res = 0;
+    // for (int pos=0; pos<=v.size(); pos++){
+    //     if (v[pos]==1 && map2D.SumNeighbours(pos)<4) res++;
+    // }
+
+    // part 2 ----------
     res = 0;
-    for (int pos=0; pos<=v.size(); pos++){
-        if (v[pos]==1 && map2D.SumNeighbours(pos)<4) res++;
-    }
+    do {
+        // cout << "---\n";
+        // map2D.PrintMap();
+        nb_rolls_to_remove = 0;
+        for (int pos=0; pos<=v.size(); pos++){
+            if (map2D.GetValue(pos)==1 && map2D.SumNeighbours(pos)<4){
+                nb_rolls_to_remove++;
+                v_rolls_to_remove.push_back(pos);
+                for (auto it : v_rolls_to_remove) map2D.UpdateValue(it, 0);
+            }
+        }
+        res += nb_rolls_to_remove;
+    } while (nb_rolls_to_remove > 0);
+
+    // for (int pos=0; pos<=v.size(); pos++) v_neighbours.push_back(map2D.SumNeighbours(pos));
+    // Map2D neighbours_map = Map2D(v_neighbours, nb_lines);
+    // cout << "neighbours:\n";
+    // neighbours_map.PrintMap();
 
     f.close();
     cout << "res: " << res << endl;

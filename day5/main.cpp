@@ -17,7 +17,8 @@ struct range {
 int main()
 {
     // puzzle variables
-    vector<range> v_range;
+    vector<range> v_ranges;
+    vector<range> v_corrected_ranges;
     vector<long int> v_ingredient;
     set<long int>fresh_ingredients;
     int res;
@@ -56,26 +57,26 @@ int main()
                     stol(match_str.substr(0,pos)), 
                     stol(match_str.substr(pos+1)) 
                 };
-                v_range.push_back(r);
+                v_ranges.push_back(r);
             }
         }
     }
     f.close();
 
     // display input
-    // cout << "ingredients:\n";
-    // for (auto it : v_ingredient) cout << it << ", ";
-    // cout << endl;
+    cout << "ingredients:\n";
+    for (auto it : v_ingredient) cout << it << ", ";
+    cout << endl;
 
-    // cout << "ranges:\n";
-    // for (auto it : v_range) cout << "(" << it.min << ", " << it.max << "), ";
-    // cout << endl;
+    cout << "ranges:\n";
+    for (auto it : v_ranges) cout << "(" << it.min << ", " << it.max << "), ";
+    cout << endl;
 
     // part 1 ----------
     // res = 0;
     // for (auto ingredient : v_ingredient){
     //     bool is_fresh = false;
-    //     for (auto range : v_range){
+    //     for (auto range : v_ranges){
     //         if (ingredient >= range.min && ingredient <= range.max){
     //             is_fresh = true;
     //             res++;
@@ -85,15 +86,42 @@ int main()
     // }
 
     // part 2 ----------
-    res = 0;
-    for (auto it : v_range){
-        cout << "(" << it.min << ", " << it.max << ")\n";
-        for (long int n = it.min; n<= it.max; n++){
-            if (!fresh_ingredients.contains(n))
-                fresh_ingredients.insert(n);
+    // res = 0;
+    // for (auto it : v_ranges){
+    //     cout << "(" << it.min << ", " << it.max << ")\n";
+    //     for (long int n = it.min; n<= it.max; n++){
+    //         if (!fresh_ingredients.contains(n))
+    //             fresh_ingredients.insert(n);
+    //     }
+    // }
+    // res = fresh_ingredients.size();
+
+    v_corrected_ranges.push_back(v_ranges[0]);
+    for (int i=1; i<v_ranges.size(); i++){
+        auto range = v_ranges[i];
+        for (auto it : v_corrected_ranges){
+            bool superposition = false;
+            cout << "range: (" << range.min << "," << range.max << ")\t";
+            cout << "corr_range: (" << it.min << "," << it.max << ")\t";
+            if (range.min < it.min && range.max >= it.min){
+                it.min = range.min;
+                superposition = true;
+                cout << "sup min\t";
+            }
+            if (range.min <= it.max && range.max > it.max){
+                it.max = range.max;
+                superposition = true;
+                cout << "sup max\t";
+            }
+            if (!superposition)
+                v_corrected_ranges.push_back(range);
+            cout << "--> (" << it.min << "," << it.max << ")\n";
         }
     }
-    res = fresh_ingredients.size();
+
+    cout << "corrected ranges:\n";
+    for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
+    cout << endl;
 
     cout << "res: " << res << endl;
     return 0;

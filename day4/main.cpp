@@ -7,6 +7,9 @@
 
 using namespace std;
 
+#define PAPER_ROLL  1
+#define EMPTY       0
+
 class Map2D {
 
     public:
@@ -39,12 +42,18 @@ class Map2D {
             return sum - v[pos];
         }
 
+        int GetSize(){
+            return v.size();
+        }
+
         int GetValue(int pos){
             return v[pos];
         }
 
         void UpdateValue(int pos, int value){
-            v[pos] = value;
+            v.erase(v.begin()+pos);
+            v.insert(v.begin()+pos, value);
+            // v[pos] = value;
         }
 
     private:
@@ -59,7 +68,7 @@ int main()
     int nb_lines=0;
     int res;
     string str;
-    vector<int> v;
+    vector<int> v, v_neighbours, v_rolls_to_remove;
 
     // open puzzle input
     ifstream f("input.txt");
@@ -71,44 +80,35 @@ int main()
     // get data from file and put it in a map
     while (getline(f, str)){
         for (char c : str){
-            if      (c=='.')    v.push_back(0);
-            else if (c=='@')    v.push_back(1);     // roll of paper
+            if      (c=='.')    v.push_back(EMPTY);
+            else if (c=='@')    v.push_back(PAPER_ROLL);
         }
         nb_lines++;
     }
     Map2D map2D = Map2D(v, nb_lines);
     // map2D.PrintMap();
 
-    // compute neighbours
-    vector<int> v_rolls_to_remove;
-    int nb_rolls_to_remove = 0;
-
-    // part 1 ----------
-    // res = 0;
-    // for (int pos=0; pos<=v.size(); pos++){
-    //     if (v[pos]==1 && map2D.SumNeighbours(pos)<4) res++;
-    // }
-
-    // part 2 ----------
+    // compute number of rolls of paper to remove
     res = 0;
+    int nb_rolls_to_remove = 0;
+    bool part_1 = true;
     do {
-        // cout << "---\n";
-        // map2D.PrintMap();
         nb_rolls_to_remove = 0;
-        for (int pos=0; pos<=v.size(); pos++){
-            if (map2D.GetValue(pos)==1 && map2D.SumNeighbours(pos)<4){
+        v_rolls_to_remove.clear();
+        for (int pos=0; pos<=map2D.GetSize(); pos++){
+            if ( map2D.GetValue(pos)==PAPER_ROLL && map2D.SumNeighbours(pos)<4 ) {
                 nb_rolls_to_remove++;
                 v_rolls_to_remove.push_back(pos);
-                for (auto it : v_rolls_to_remove) map2D.UpdateValue(it, 0);
+                if (!part_1)    // the update creates a really wird behavior and does not work with part. 1
+                    for (auto p : v_rolls_to_remove) map2D.UpdateValue(p, EMPTY);
             }
         }
         res += nb_rolls_to_remove;
-    } while (nb_rolls_to_remove > 0);
-
-    // for (int pos=0; pos<=v.size(); pos++) v_neighbours.push_back(map2D.SumNeighbours(pos));
-    // Map2D neighbours_map = Map2D(v_neighbours, nb_lines);
-    // cout << "neighbours:\n";
-    // neighbours_map.PrintMap();
+        cout << "---\n";
+        cout << "nb_rolls_to_remove: " << nb_rolls_to_remove << endl;
+        // map2D.PrintMap();
+    }
+    while (!part_1 && nb_rolls_to_remove > 0);
 
     f.close();
     cout << "res: " << res << endl;

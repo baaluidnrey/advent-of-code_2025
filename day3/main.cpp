@@ -13,7 +13,7 @@ int main()
     string str;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -30,29 +30,18 @@ int main()
         vector<int> v;
         for (char c : str) v.push_back(static_cast<int>(c-'0'));
 
-        cout << "---\n" << str << endl;
-
+        // compute joltage of bank
         for (int i=1; i<=nb_batteries; i++){
-
-            // for (auto it : v) cout << it << ", ";
-            // cout << endl;
             
             result = std::max_element(
                 v.begin(), 
                 v.end()-(nb_batteries-i)
             );
             
-            // std::cout << "Max element found at index "
-            //         << std::distance(v.begin(), result)
-            //         << " has value " << *result << '\n';
-
             joltage += *result * pow(10, nb_batteries-i);
-
-            // cout << "joltage: " << joltage << endl; 
 
             v.erase(v.begin(), v.begin() + std::distance(v.begin(), result) + 1);
         }
-        cout << "joltage: " << joltage << endl; 
         res += joltage;
     }
     f.close();

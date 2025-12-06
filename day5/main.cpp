@@ -5,6 +5,7 @@
 #include <string>
 #include <regex>
 #include <cmath>
+#include <set>
 
 using namespace std;
 
@@ -18,10 +19,11 @@ int main()
     // puzzle variables
     vector<range> v_range;
     vector<long int> v_ingredient;
+    set<long int>fresh_ingredients;
     int res;
 
     // open puzzle input
-    ifstream f("input.txt");
+    ifstream f("input_test.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -61,26 +63,38 @@ int main()
     f.close();
 
     // display input
-    cout << "ingredients:\n";
-    for (auto it : v_ingredient) cout << it << ", ";
-    cout << endl;
+    // cout << "ingredients:\n";
+    // for (auto it : v_ingredient) cout << it << ", ";
+    // cout << endl;
 
-    cout << "ranges:\n";
-    for (auto it : v_range) cout << "(" << it.min << ", " << it.max << "), ";
-    cout << endl;
+    // cout << "ranges:\n";
+    // for (auto it : v_range) cout << "(" << it.min << ", " << it.max << "), ";
+    // cout << endl;
 
-    // compute result
+    // part 1 ----------
+    // res = 0;
+    // for (auto ingredient : v_ingredient){
+    //     bool is_fresh = false;
+    //     for (auto range : v_range){
+    //         if (ingredient >= range.min && ingredient <= range.max){
+    //             is_fresh = true;
+    //             res++;
+    //             break;
+    //         }
+    //     }
+    // }
+
+    // part 2 ----------
     res = 0;
-    for (auto ingredient : v_ingredient){
-        bool is_fresh = false;
-        for (auto range : v_range){
-            if (ingredient >= range.min && ingredient <= range.max){
-                is_fresh = true;
-                res++;
-                break;
-            }
+    for (auto it : v_range){
+        cout << "(" << it.min << ", " << it.max << ")\n";
+        for (long int n = it.min; n<= it.max; n++){
+            if (!fresh_ingredients.contains(n))
+                fresh_ingredients.insert(n);
         }
     }
+    res = fresh_ingredients.size();
+
     cout << "res: " << res << endl;
     return 0;
 }

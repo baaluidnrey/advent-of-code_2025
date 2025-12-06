@@ -21,7 +21,7 @@ int main()
 
     while (getline(f, str)){
         
-        std::vector<int>::iterator result;
+        vector<int>::iterator max;
         long int joltage = 0;
         // int nb_batteries = 2;       // part 1
         int nb_batteries = 12;       // part 2
@@ -33,17 +33,17 @@ int main()
         // compute joltage of bank
         for (int i=1; i<=nb_batteries; i++){
             
-            result = max_element(
+            max = max_element(
                 v.begin(), 
                 v.end()-(nb_batteries-i)
             );
-            
-            joltage += *result * pow(10, nb_batteries-i);
+
+            joltage += *max * pow(10, nb_batteries-i);
 
             v.erase(
                 v.begin(), 
-                v.begin() + distance(v.begin(), result) + 1
-            );
+                v.begin() + distance(v.begin(), max) + 1
+            );    
         }
         res += joltage;
     }

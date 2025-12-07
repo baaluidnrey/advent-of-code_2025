@@ -78,11 +78,9 @@ int main()
     vector<range> v_ranges;
     vector<range> v_corrected_ranges;
     vector<long int> v_ingredient;
-    set<long int>fresh_ingredients;
-    int res;
 
     // open puzzle input
-    ifstream f("input.txt");
+    ifstream f("input_test.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -122,25 +120,14 @@ int main()
     }
     f.close();
 
-    // display input
-    cout << "ingredients:\n";
-    for (auto it : v_ingredient) cout << it << ", ";
-    cout << endl;
+    // display input ----------
+    // cout << "ingredients:\n";
+    // for (auto it : v_ingredient) cout << it << ", ";
+    // cout << endl;
 
     cout << "ranges:\n";
     for (auto it : v_ranges) cout << "(" << it.min << ", " << it.max << "), ";
     cout << endl;
-
-    // part 2 ----------
-    // res = 0;
-    // for (auto it : v_ranges){
-    //     cout << "(" << it.min << ", " << it.max << ")\n";
-    //     for (long int n = it.min; n<= it.max; n++){
-    //         if (!fresh_ingredients.contains(n))
-    //             fresh_ingredients.insert(n);
-    //     }
-    // }
-    // res = fresh_ingredients.size();
 
     // concatenation of ranges ----------
     int nb_concatenations;
@@ -158,19 +145,28 @@ int main()
     cout << endl;
 
     // part 1 ----------
-    res = 0;
+    int res_1 = 0;
     for (auto ingredient : v_ingredient){
         bool is_fresh = false;
         for (auto range : v_corrected_ranges){
             if (ingredient >= range.min && ingredient <= range.max){
                 is_fresh = true;
-                res++;
+                res_1++;
                 break;
             }
         }
     }
 
+    // part 2 ----------
+    long long int res_2 = 0;
+    for (auto it : v_corrected_ranges){
+        res_2 += (it.max-it.min+1);
+        cout << "range (" << it.min << "," << it.max << "):  \t+" << (it.max-it.min+1);
+        cout << "\n\t\t\t\t\t\t\t\t\t\tres:" << res_2 << endl;
+    }
 
-    cout << "res: " << res << endl;
+
+    cout << "part. 1: " << res_1 << endl;
+    cout << "part. 2: " << res_2 << endl;
     return 0;
 }

@@ -91,7 +91,7 @@ int main()
     // compute number of rolls of paper to remove
     res = 0;
     int nb_rolls_to_remove = 0;
-    bool part_1 = true;
+    bool part_1 = false;
     do {
         nb_rolls_to_remove = 0;
         v_rolls_to_remove.clear();
@@ -99,10 +99,9 @@ int main()
             if ( map2D.GetValue(pos)==PAPER_ROLL && map2D.SumNeighbours(pos)<4 ) {
                 nb_rolls_to_remove++;
                 v_rolls_to_remove.push_back(pos);
-                if (!part_1)    // the update creates a really wird behavior and does not work with part. 1
-                    for (auto p : v_rolls_to_remove) map2D.UpdateValue(p, EMPTY);
             }
         }
+        for (auto p : v_rolls_to_remove) map2D.UpdateValue(p, EMPTY);
         res += nb_rolls_to_remove;
         cout << "---\n";
         cout << "nb_rolls_to_remove: " << nb_rolls_to_remove << endl;

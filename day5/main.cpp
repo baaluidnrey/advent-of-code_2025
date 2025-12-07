@@ -40,8 +40,8 @@ int ConcatenateRanges(vector<range> input, vector<range> &output, bool debug){
 
             if (debug) cout << "corr_range: (" << corrected_range.min << "," << corrected_range.max << ")\t";
 
-            if (range.min == min && range.max == max){       // same range, do nothing
-                if (debug) cout << "same range\n";
+            if (range.min >= min && range.max <= max){       // range included, do nothing
+                if (debug) cout << "range included\n";
                 range_to_add = false;
             }
             
@@ -80,7 +80,7 @@ int main()
     vector<long int> v_ingredient;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -158,7 +158,7 @@ int main()
     }
 
     // part 2 ----------
-    long long int res_2 = 0;
+    long int res_2 = 0;
     for (auto it : v_corrected_ranges){
         res_2 += (it.max-it.min+1);
         cout << "range (" << it.min << "," << it.max << "):  \t+" << (it.max-it.min+1);

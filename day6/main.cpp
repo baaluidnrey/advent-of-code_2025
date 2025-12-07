@@ -25,7 +25,7 @@ int main()
     bool part_2 = true;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -107,14 +107,14 @@ int main()
         vector<int> numbers;
         vector<int> digits;
         int digit, offset;
+        bool new_operation = true;
 
-        FILE* fp = std::fopen("input_test.txt", "rb");  // we need to open the file in binary mode
+        FILE* fp = std::fopen("input.txt", "rb");  // we need to open the file in binary mode
 
         while (col < nb_cols) {
 
             digits.clear();
             bool empty_col = true;
-            bool new_operation = true;
 
             for (int row = 0; row <nb_rows-1; row++){
 
@@ -123,7 +123,7 @@ int main()
                     offset = (nb_rows-1)*(nb_cols+1)+col;
                     fseek(fp, offset, SEEK_SET);
                     operation_type = fgetc(fp);
-                    cout << "operation: " << operation_type << endl;
+                    cout << "\n--- operation: " << operation_type << endl;
                     new_operation = false;
                 }
 
@@ -142,8 +142,21 @@ int main()
 
             for (auto it : digits) cout << it;
             cout << ", ";
+
+            // get number from digits
+            int number = 0;
+            for (int i = 0; i < digits.size(); i++){
+                int tmp = digits[i] * pow(10, (digits.size()-1)-i);
+                number += tmp;
+            }
+            if (number != 0)   numbers.push_back(number);
+
+            // fill the vector of operations
             if (empty_col || col==nb_cols) {
                 cout << endl;
+                operation operation_tmp{numbers, operation_type};
+                operations.push_back(operation_tmp);
+                numbers.clear();
                 new_operation = true;
             }
         }

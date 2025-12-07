@@ -82,7 +82,7 @@ int main()
     int res;
 
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -131,19 +131,6 @@ int main()
     for (auto it : v_ranges) cout << "(" << it.min << ", " << it.max << "), ";
     cout << endl;
 
-    // part 1 ----------
-    // res = 0;
-    // for (auto ingredient : v_ingredient){
-    //     bool is_fresh = false;
-    //     for (auto range : v_ranges){
-    //         if (ingredient >= range.min && ingredient <= range.max){
-    //             is_fresh = true;
-    //             res++;
-    //             break;
-    //         }
-    //     }
-    // }
-
     // part 2 ----------
     // res = 0;
     // for (auto it : v_ranges){
@@ -166,10 +153,23 @@ int main()
     }
     while (nb_concatenations!=0);
 
-
     cout << "corrected ranges:\n";
     for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
     cout << endl;
+
+    // part 1 ----------
+    res = 0;
+    for (auto ingredient : v_ingredient){
+        bool is_fresh = false;
+        for (auto range : v_corrected_ranges){
+            if (ingredient >= range.min && ingredient <= range.max){
+                is_fresh = true;
+                res++;
+                break;
+            }
+        }
+    }
+
 
     cout << "res: " << res << endl;
     return 0;

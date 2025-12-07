@@ -97,25 +97,35 @@ int main()
     // res = fresh_ingredients.size();
 
     v_corrected_ranges.push_back(v_ranges[0]);
-    for (int i=1; i<v_ranges.size(); i++){
-        auto range = v_ranges[i];
-        for (auto it : v_corrected_ranges){
+    range range_tmp;
+    // range corrected_range;
+
+    for (auto range : v_ranges){
+
+        cout << "range: (" << range.min << "," << range.max << ")\n";
+
+        for (auto corrected_range : v_corrected_ranges){
+        // for (int j=0; j<v_corrected_ranges.size(); j++){
             bool superposition = false;
-            cout << "range: (" << range.min << "," << range.max << ")\t";
-            cout << "corr_range: (" << it.min << "," << it.max << ")\t";
-            if (range.min < it.min && range.max >= it.min){
-                it.min = range.min;
+            auto min = corrected_range.min;
+            auto max = corrected_range.max;
+
+            cout << "corr_range: (" << corrected_range.min << "," << corrected_range.max << ")\t";
+            if (range.min < corrected_range.min && range.max >= corrected_range.min){
+                min = range.min;
                 superposition = true;
                 cout << "sup min\t";
             }
-            if (range.min <= it.max && range.max > it.max){
-                it.max = range.max;
+            if (range.min <= corrected_range.max && range.max > corrected_range.max){
+                max = range.max;
                 superposition = true;
                 cout << "sup max\t";
             }
-            if (!superposition)
-                v_corrected_ranges.push_back(range);
-            cout << "--> (" << it.min << "," << it.max << ")\n";
+            range_tmp.min = min;
+            range_tmp.max = max;
+            if (!superposition)     v_corrected_ranges.push_back(range);
+            else                    v_corrected_ranges.push_back(range_tmp);
+            cout << "--> (" << min << "," << max << ")\n";
         }
     }
 

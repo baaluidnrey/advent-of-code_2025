@@ -103,28 +103,49 @@ int main()
 
         // 2. then parse the file column by column to get numbers
         int col = 0;
-        char c;
+        char c, operation_type;
         vector<int> numbers;
+        vector<int> digits;
+        int digit, offset;
 
         FILE* fp = std::fopen("input_test.txt", "rb");  // we need to open the file in binary mode
 
         while (col < nb_cols) {
 
-            vector<int> digits;
+            digits.clear();
+            bool empty_col = true;
+            bool new_operation = true;
 
             for (int row = 0; row <nb_rows-1; row++){
 
+                // extract the type of operation
+                if (new_operation){
+                    offset = (nb_rows-1)*(nb_cols+1)+col;
+                    fseek(fp, offset, SEEK_SET);
+                    operation_type = fgetc(fp);
+                    cout << "operation: " << operation_type << endl;
+                    new_operation = false;
+                }
+
                 // get char of col line by line
-                int offset = row*(nb_cols+1)+col;
-                fseek(fp, offset, SEEK_SET);        // go at the position of the interesting char in file
+                offset = row*(nb_cols+1)+col;
+                fseek(fp, offset, SEEK_SET);
                 c = fgetc(fp);
 
-                int digit = static_cast<int>(c-'0');
-                if ( digit>=0 && digit>=9 ) digits.push_back(digit);
-
-                cout << "offset: " << offset << ", c: " << c << ", digit: " << digit << endl;
+                digit = static_cast<int>(c-'0');
+                if ( digit>=0 && digit<=9 ) {
+                    digits.push_back(digit);
+                    empty_col = false;
+                }
             }
             col++;
+
+            for (auto it : digits) cout << it;
+            cout << ", ";
+            if (empty_col || col==nb_cols) {
+                cout << endl;
+                new_operation = true;
+            }
         }
         fclose(fp);
     }

@@ -97,16 +97,17 @@ int main()
     // res = fresh_ingredients.size();
 
     v_corrected_ranges.push_back(v_ranges[0]);
-
-    cout << "corrected ranges:\n";
-    for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
-    cout << endl;
-
     range range_tmp;
 
     for (auto range : v_ranges){
 
         cout << "---\nrange: (" << range.min << "," << range.max << ")\n";
+
+        cout << "corrected ranges:\n";
+        for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
+        cout << endl;
+
+        bool range_to_add = true;
 
         for (int j=0; j<v_corrected_ranges.size(); j++){
             auto corrected_range = v_corrected_ranges.at(j);
@@ -117,7 +118,12 @@ int main()
 
             cout << "corr_range: (" << corrected_range.min << "," << corrected_range.max << ")\t";
 
-            if (range.min != min || range.max != max){      // not the same range
+            if (range.min == min && range.max == max){       // same range, do nothing
+                cout << "same range\n";
+                range_to_add = false;
+            }
+            
+            else{
 
                 if (range.min < min && range.max >= min){   // superposition from bottom
                     min = range.min;
@@ -131,16 +137,19 @@ int main()
 
                 range_tmp.min = min;
                 range_tmp.max = max;
-                if (!superposition)     v_corrected_ranges.push_back(range);
-                else                    v_corrected_ranges.at(j) = range_tmp;
+                if (superposition){
+                    v_corrected_ranges.at(j) = range_tmp;
+                    range_to_add = false;
+                }              
+                cout << "--> (" << min << "," << max << ")\n";
             }
-            cout << "--> (" << min << "," << max << ")\n";
         }
-        cout << "corrected ranges:\n";
-        for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
-        cout << endl;
+        if (range_to_add)     v_corrected_ranges.push_back(range);
     }
 
+    cout << "corrected ranges:\n";
+    for (auto it : v_corrected_ranges) cout << "(" << it.min << ", " << it.max << "), ";
+    cout << endl;
 
     cout << "res: " << res << endl;
     return 0;

@@ -5,7 +5,6 @@
 #include <string>
 #include <regex>
 #include <cmath>
-#include <set>
 
 using namespace std;
 
@@ -19,10 +18,11 @@ int main()
 {
     // puzzle variables
     vector<operation> operations;
+    vector<operation> cephalopod_operations;
     int operation_index;
 
     // open puzzle input
-    ifstream f("input.txt");
+    ifstream f("input_test.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -77,14 +77,42 @@ int main()
     }
     f.close();
 
-    // display operations ----------
-    // cout << "operations:\n";
-    // for (auto it : operations){
-    //     cout << it.type << ": ";
-    //     for (auto n : it.numbers) cout << n << ", ";
-    //     cout << endl;
-    // }
+    // Cephalopod math is written right-to-left in columns ----------
+    for (auto it : operations){
+        int nb_digits = 0;
 
+        for (auto n : it.numbers) cout << n << ", ";
+        cout << endl;
+
+        // we need to know how many digits we've got to synchronize colums
+        // example :
+        //
+        for (auto n : it.numbers){
+            nb_digits = (floor(log10(n))+1 > nb_digits) ? floor(log10(n))+1 : nb_digits;
+        }
+
+        vector<int> numbers;
+        for (auto n : it.numbers){
+
+            int corrected_number = n * pow(10, nb_digits-floor(log10(n)+1));
+            cout << n << " --> " << corrected_number << endl;
+        }
+    }
+
+
+    // display operations ----------
+    cout << "---\noperations:\n";
+    for (auto it : operations){
+        cout << it.type << ": ";
+        for (auto n : it.numbers) cout << n << ", ";
+        cout << endl;
+    }
+    cout << "---\ncephalopod operations:\n";
+    for (auto it : cephalopod_operations){
+        cout << it.type << ": ";
+        for (auto n : it.numbers) cout << n << ", ";
+        cout << endl;
+    }
 
     // part 1 ----------
     long int res_1 = 0;
@@ -103,6 +131,7 @@ int main()
 
     // part 2 ----------
     int res_2 = 0;
+
 
     cout << "part. 1: " << res_1 << endl;
     cout << "part. 2: " << res_2 << endl;

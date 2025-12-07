@@ -16,7 +16,9 @@ struct splitter_row {
 vector<int> splitLaserBeam(vector<int> beams, vector<int> splitters, int &nb_splits){
     
     vector<int> res;
+    nb_splits = 0;
     for (auto b : beams){
+        bool splitted = false;
         for (auto s : splitters){
             if (b==s){
                 nb_splits++;
@@ -25,8 +27,10 @@ vector<int> splitLaserBeam(vector<int> beams, vector<int> splitters, int &nb_spl
                 // it would be more optimized to use a set
                 if (count(res.begin(), res.end(), p1) == 0) res.push_back(p1);
                 if (count(res.begin(), res.end(), p2) == 0) res.push_back(p2);
+                splitted = true;
             }
         }
+        if (!splitted && count(res.begin(), res.end(), b) == 0) res.push_back(b);
     }
     return res;
 }
@@ -34,7 +38,7 @@ vector<int> splitLaserBeam(vector<int> beams, vector<int> splitters, int &nb_spl
 int main()
 {
     // open puzzle input
-    ifstream f("input_test.txt");
+    ifstream f("input.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -63,7 +67,6 @@ int main()
     f.close();
 
     // display input ----------
-    /*
     cout << "---\nbeams\n";
     for (auto p : beams) cout << p << ", ";
     cout << endl;
@@ -73,23 +76,28 @@ int main()
         for (auto p : it.positions) cout << p << ", ";
         cout << endl;
     }
-    */
 
     // part. 1 ----------
     int res = 0;
+    int nb_splits;
     vector<int> beams_tmp = beams;
     do {
-        beams_tmp = splitLaserBeam(beams_tmp, splitters.front().positions, res);
 
-        // cout << "---\nbeams: ";
-        // for (auto p : beams_tmp) cout << p << ", ";
-        // cout << endl;
-        // cout << "splitters: ";
-        // for (auto p : splitters.front().positions) cout << p << ", ";
-        // cout << endl;
-        // cout << "nb of splits: " << res << endl;
+        cout << "---\nbeams: ";
+        for (auto p : beams_tmp) cout << p << ", ";
+        cout << endl;
+
+        beams_tmp = splitLaserBeam(beams_tmp, splitters.front().positions, nb_splits);
+
+        cout << "splitters: ";
+        for (auto p : splitters.front().positions) cout << p << ", ";
+        cout << endl;
+        cout << "nb of splits: " << nb_splits << endl;
+
+        res+=nb_splits;
 
         splitters.erase(splitters.begin());
+
     } while (splitters.size()>0);
 
 

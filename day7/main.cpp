@@ -35,10 +35,35 @@ vector<int> splitLaserBeam(vector<int> beams, vector<int> splitters, int &nb_spl
     return res;
 }
 
+int countTimelines(vector<int> beams, vector<splitter_row> splitters){
+    int nb_timelines = 0;
+    for (auto b : beams){
+        for (auto s : splitters.front().positions){
+            if (splitters.size()>1){
+                if (b==s){
+
+                    auto splitters_tmp = splitters;
+                    splitters_tmp.erase(splitters_tmp.begin());
+                    // go left
+                    vector<int> v1;
+                    v1.push_back(b-1);
+                    nb_timelines+=countTimelines(v1, splitters_tmp);
+                
+                    // go right
+                    vector<int> v2;
+                    v2.push_back(b-1);
+                    nb_timelines+=countTimelines(v2, splitters_tmp);
+                }
+            }
+        }
+    }
+    return nb_timelines;
+}
+
 int main()
 {
     // open puzzle input
-    ifstream f("input.txt");
+    ifstream f("input_test.txt");
     if (!f.is_open()){
         cerr << "Error opening the file!";
         return 1;
@@ -78,29 +103,20 @@ int main()
     }
 
     // part. 1 ----------
-    int res = 0;
+    int res_1 = 0;
     int nb_splits;
     vector<int> beams_tmp = beams;
     do {
-
-        cout << "---\nbeams: ";
-        for (auto p : beams_tmp) cout << p << ", ";
-        cout << endl;
-
         beams_tmp = splitLaserBeam(beams_tmp, splitters.front().positions, nb_splits);
-
-        cout << "splitters: ";
-        for (auto p : splitters.front().positions) cout << p << ", ";
-        cout << endl;
-        cout << "nb of splits: " << nb_splits << endl;
-
-        res+=nb_splits;
-
+        res_1+=nb_splits;
         splitters.erase(splitters.begin());
 
     } while (splitters.size()>0);
 
+    // part. 2 ----------
+    // int res_2 = countTimelines(beams, splitters);
 
-    cout << "res : " << res << endl;
+    cout << "res part. 1 : " << res_1 << endl;
+    // cout << "res part. 2 : " << res_2 << endl;
     return 0;
 }

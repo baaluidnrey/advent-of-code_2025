@@ -35,24 +35,30 @@ vector<int> splitLaserBeam(vector<int> beams, vector<int> splitters, int &nb_spl
     return res;
 }
 
-int countTimelines(vector<int> beams, vector<splitter_row> splitters){
+int countTimelines(vector<int> beams, vector<splitter_row> splitters, int step){
     int nb_timelines = 0;
+    cout << "step: " << step << endl;
     for (auto b : beams){
-        for (auto s : splitters.front().positions){
-            if (splitters.size()>1){
+
+        cout << "splitters size: " << splitters.size() << endl;
+        for (auto p : splitters.at(step).positions) cout << p << ", ";
+        cout << endl;
+
+        for (auto s : splitters.at(step).positions){
+            if (splitters.size()-step>1){
                 if (b==s){
 
-                    auto splitters_tmp = splitters;
-                    splitters_tmp.erase(splitters_tmp.begin());
                     // go left
                     vector<int> v1;
                     v1.push_back(b-1);
-                    nb_timelines+=countTimelines(v1, splitters_tmp);
+                    nb_timelines++;
+                    nb_timelines+=countTimelines(v1, splitters, step+1);
                 
                     // go right
                     vector<int> v2;
-                    v2.push_back(b-1);
-                    nb_timelines+=countTimelines(v2, splitters_tmp);
+                    v2.push_back(b+1);
+                    nb_timelines++;
+                    nb_timelines+=countTimelines(v2, splitters, step+1);
                 }
             }
         }
@@ -103,20 +109,21 @@ int main()
     }
 
     // part. 1 ----------
-    int res_1 = 0;
-    int nb_splits;
-    vector<int> beams_tmp = beams;
-    do {
-        beams_tmp = splitLaserBeam(beams_tmp, splitters.front().positions, nb_splits);
-        res_1+=nb_splits;
-        splitters.erase(splitters.begin());
+    // int res_1 = 0;
+    // int nb_splits;
+    // vector<int> beams_tmp = beams;
+    // do {
+    //     beams_tmp = splitLaserBeam(beams_tmp, splitters.front().positions, nb_splits);
+    //     res_1+=nb_splits;
+    //     splitters.erase(splitters.begin());
 
-    } while (splitters.size()>0);
+    // } while (splitters.size()>0);
 
     // part. 2 ----------
-    // int res_2 = countTimelines(beams, splitters);
+    int step = 0;
+    int res_2 = countTimelines(beams, splitters, step);
 
-    cout << "res part. 1 : " << res_1 << endl;
-    // cout << "res part. 2 : " << res_2 << endl;
+    // cout << "res part. 1 : " << res_1 << endl;
+    cout << "res part. 2 : " << res_2 << endl;
     return 0;
 }
